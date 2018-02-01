@@ -1,0 +1,2 @@
+[3scale]
+localhost ansible_connection=local  threescale_admin_hostname=<TENANT>.3scale.net access_token=<ACCESS_TOKEN>
