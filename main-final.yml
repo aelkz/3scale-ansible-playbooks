@@ -1,13 +1,18 @@
 ---
 
+# 1. create api service
+# 2. create application plan for api service
+# 3. create application (this will create a client-id and client-secret for use with RHSSO)
+# 4. promote stage api to production api
+
 - name: Provision APIs in 3scale
   hosts: 3scale
   become: no
   vars:
-    threescale_apis_to_create:
+    apis:
       - service:
           name: "Second API"
-          system_name: second_api
+          system_name: api
           backend_version: oidc
         proxy:
           credentials_location: headers
@@ -15,8 +20,13 @@
           sandbox_endpoint: https://api-api-staging.apps.rh-consulting-br.com:443
           endpoint: https://api-api.apps.rh-consulting-br.com:443
           oidc_issuer_endpoint: https://3scale:4b400637-05d8-4c1c-8603-d5fefe3c8ca4@secure-sso-sso-banestes.apps.rh-consulting-br.com/auth/realms/redhat
-        backend: http://example:8080
-        policies_cors_enabled: false
+        mapping_rules:
+          - http_method: GET
+          - http_method: POST
+          - http_method: DELETE
+          - http_method: PUT
+        policies_cors_enabled: true
+        backend: http://fis-api-sample.apps-banestes.svc:8080
         application_plans:
           - name: Basic
             system_name: basic
@@ -61,6 +71,6 @@
                 scope: ApplicationPlan
                 enabled: true
   tasks:
-    - include: "status.yml"
-    - include: "create_api.yml"
-      with_items: '{{ threescale_apis_to_create }}'
+  - include: "status.yml"
+  - include: "create_api.yml"
+    with_items: '{{ apis }}'

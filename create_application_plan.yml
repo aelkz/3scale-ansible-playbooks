@@ -23,6 +23,21 @@
     register: response
     when: 'plan.system_name not in application_plans'
 
+    # TODO
+    # POST /admin/api/services/{service_id}/features.json
+  - name: Create application plan features
+    debug: msg={{ service_id }}
+
+    # TODO
+    # POST /admin/api/application_plans/{application_plan_id}/features.json
+  - name: Associate application plan features
+    debug: msg={{ service_id }}
+
+    # TODO
+    #
+  - name: Enable application plan features
+    debug: msg={{ service_id }}
+
   - set_fact:
       application_plans: '{{ application_plans|union([ plan.system_name ]) }}'
       application_plans_details: '{{ application_plans_details|union([{ "system_name": plan.system_name, "id": response.json.application_plan.id }]) }}'

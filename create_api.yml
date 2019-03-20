@@ -50,6 +50,39 @@
       method: PATCH
       body: '{{ body_update_proxy }}'
 
+  # TODO
+  # POST mapping_rules.json
+  - name: Update mapping rules
+    debug: msg={{ service_id }}
+
+  # TODO - TEST
+  # PUT policies.json
+  - name: Update CORS policies
+    debug: msg={{ service_id }}
+
+  - name: Set CORS policies
+    set_fact:
+      cors_policies: '[{"name":"cors","version":"builtin","configuration":{"allow_headers":["Authorization","Origin","X-Requested-With","Content-Type","Access-Control-Request-Method","Access-Control-Request-Headers"],"allow_origin":"*"},"enabled":true},{"name":"apicast","version":"builtin","configuration":{},"enabled":true}]'
+    when: 'item.policies_cors_enabled|bool'
+
+  - name: Set Backend URL
+    set_fact:
+      body_update_proxy: '{{ body_update_proxy ~ "&policies_config" ~ "=" ~ (cors_policies|urlencode) }}'
+    when: 'item.policies_cors_enabled|bool'
+
+  - name: Update the proxy with CORS policies
+    uri:
+      url: https://{{ threescale_admin_hostname }}/admin/api/services/{{ service_id }}/proxy.json
+      validate_certs: no
+      method: PATCH
+      body: '{{ body_update_proxy }}'
+    when: 'item.policies_cors_enabled|bool'
+
+  # TODO
+  # POST /admin/api/services/{service_id}/proxy/configs/{environment}/{version}/promote.json
+  - name: Promote api to production
+    debug: msg={{ service_id }}
+
   - name: Get the list of existing application plans
     uri:
       url: https://{{ threescale_admin_hostname }}/admin/api/services/{{ service_id }}/application_plans.json?access_token={{ access_token|urlencode }}

@@ -58,6 +58,6 @@
                     application_key: "{{ 'my-app'|sha1() }}"
 
     tasks:
-    - include: "3scale_status.yml"
+    - include: "status.yml"
     - include: "create_api.yml"
       with_items: '{{ threescale_apis_to_create }}'

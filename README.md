@@ -1,4 +1,4 @@
-### 3SCALE TOOLS
+### 3SCALE API TOOLS
 
 ##### PRE-INSTALL REQUIREMENTS (mac osx)
 
@@ -9,16 +9,27 @@ brew upgrade && brew install jp
 pip install jmespath-terminal
 ```
 
-Create a new access-token inside 3Scale admin portal:
+Create a new 3Scale `access-token` inside 3Scale admin portal:
 
-<img src="documentation/02.png" />
+![step1](documentation/images/02.png "Patches applied after installation process")
 
-<img src="documentation/01.png" />
+![step2](documentation/images/01.png "Patches applied after installation process")
 
-<img src="documentation/03.png" />
+![step3](documentation/images/03.png "Patches applied after installation process")
 
-Copy the hosts.example content to your ansible/hosts file.
+Copy the generated `access-token` into a file for later use.
+
+Edit the `hosts.example` file with your hostname and access-token.
+
+Then:
+
+`sudo bash -c 'cat hosts.example >> /etc/ansible/hosts'`
+
+##### CONFIGURE
+
+Edit the `main.yml` with your apis to be created.
 
 ##### RUNNING
 
-ansible-playbook roles/3scale-tools/main.yml -vvv -c paramiko -k --flush-cache --extra-vars "ansible_user=raphael"
+`ansible-playbook main.yml -vvv -c paramiko -k --flush-cache --extra-vars "ansible_user=raphael"`
+
