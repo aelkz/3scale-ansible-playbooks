@@ -1,0 +1,29 @@
+---
+
+  - name: Get a list of available services
+    uri:
+      url: "https://{{ threescale_admin_hostname }}/admin/api/services.json?access_token={{ access_token }}"
+      validate_certs: no
+    register: response
+
+  - set_fact:
+      services: '{{ response.json|json_query(''services[*].service.system_name'') }}'
+      services_details: '{{ response.json|json_query(''services[].{"system_name": service.system_name, "id": service.id}'') }}'
+
+  - name: Get the list of existing applications
+    uri:
+      url: https://{{ threescale_admin_hostname }}/admin/api/applications.json?access_token={{ access_token|urlencode }}
+      validate_certs: no
+    register: response
+
+  - set_fact:
+      applications: '{{ response.json|json_query(''applications[*].application.name'') }}'
+
+  - name: Get the default (first) account
+    uri:
+      url: https://{{ threescale_admin_hostname }}/admin/api/accounts.json?access_token={{ access_token|urlencode }}&state=approved&page=1&per_page=1
+      validate_certs: no
+    register: response
+
+  - set_fact:
+      account_id: '{{ response.json.accounts[0].account.id }}'

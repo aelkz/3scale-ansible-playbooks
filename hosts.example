@@ -1,2 +1,2 @@
 [3scale]
-localhost ansible_connection=local  threescale_admin_hostname=<TENANT>.3scale.net access_token=<ACCESS_TOKEN>
+localhost threescale_admin_hostname=3scale-admin.apps.rh-consulting-br.com access_token=5b3d874b96898b5c8fc7a42483752ff8b9bf0bfcd3790751aa4e7c777dcfb363

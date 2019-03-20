@@ -1,63 +1,29 @@
 ---
 
-  - name: Provision APIs in 3scale
-    hosts: 3scale
-    become: no
-    vars:
-        threescale_apis_to_create:
-          - service:
-              name: "Hello API"
-              system_name: hello-api
-              backend_version: 1 # 1 means "API Key"
-            proxy:
-              credentials_location: headers
-              api_test_path: /rest/Hello%20API%20Mock/0.8/v1/hello?David
-            backend: http://example:8080
-            application_plans:
-              - name: Default
-                system_name: default
-                default: true
-                state: published
-                applications:
-                  - name: Hello App
-                    description: "This is my very first application"
-          - service:
-              name: "Github API"
-              system_name: github-api
-              backend_version: 1 # 1 means "API Key"
-            proxy:
-              credentials_location: headers
-              api_test_path: /
-            backend: https://api.github.com
-            application_plans:
-              - name: Default
-                system_name: default
-                default: true
-                state: published
-                applications:
-                  - name: GitHub Test App
-                    description: "This is my very first application"
-          - service:
-              name: "Hello API OAuth"
-              system_name: hello-api-oauth
-              backend_version: oauth
-            proxy:
-              credentials_location: headers
-              api_test_path: /rest/Hello%20API%20Mock/0.8/v1/hello?Gavin
-            backend: http://example:8080
-            application_plans:
-              - name: Default
-                system_name: default
-                default: true
-                state: published
-                applications:
-                  - name: Hello App with OAuth
-                    description: "This is my very first application using OAuth"
-                    redirect_url: https://www.getpostman.com/oauth2/callback
-                    application_id: "my-app"
-                    application_key: "{{ 'my-app'|sha1() }}"
-
-    tasks:
-    - include: "3scale_status.yml"
-    - include: "create_api.yml"
-      with_items: '{{ threescale_apis_to_create }}'
+- name: Provision APIs in 3scale
+  hosts: 3scale
+  become: no
+  vars:
+    threescale_apis_to_create:
+      - service:
+          name: "Hello API OAuth"
+          system_name: hello-api-oauth
+          backend_version: oauth
+        proxy:
+          credentials_location: headers
+          api_test_path: /rest/Hello%20API%20Mock/0.8/v1/hello?Gavin
+        backend: http://example:8080
+        application_plans:
+          - name: Default
+            system_name: default
+            default: true
+            state: published
+            applications:
+              - name: Hello App with OAuth
+                description: "This is my very first application using OAuth"
+                redirect_url: https://www.getpostman.com/oauth2/callback
+                application_id: "my-app"
+                application_key: "{{ 'my-app'|sha1() }}"
+  tasks:
+  - include: "3scale_status.yml"
+    with_items: '{{ threescale_apis_to_create }}'
